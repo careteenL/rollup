@@ -5,5 +5,5 @@
 
 ```shell
 npm i
-npm start
+npm build
 ```

@@ -1,6 +1,7 @@
+import { clone } from 'lodash'
 import { name, age } from './userinfo'
 
-console.log(name)
+console.log(name, clone)
 
 const sum = (a, b) => {
   return a + b
