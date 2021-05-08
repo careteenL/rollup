@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rollup --config"
+    "dev": "rollup --config rollup.config.dev.js -w",
+    "build": "rollup --config rollup.config.build.js"
   },
   "keywords": [],
   "author": "",
