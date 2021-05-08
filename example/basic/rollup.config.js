@@ -4,6 +4,8 @@ import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import { terser } from 'rollup-plugin-terser'
 import postcss from 'rollup-plugin-postcss'
+import serve from 'rollup-plugin-serve'
+
 export default {
   input: './src/index.ts',
   output: {
@@ -19,5 +21,10 @@ export default {
     typescript(),
     terser(),
     postcss(),
+    serve({
+      open: false,
+      port: 2333,
+      contentBase: './dist',
+    }),
   ],
 }
