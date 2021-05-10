@@ -1,0 +1,12 @@
+{
+  "name": "myrollup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "debug": "node rollup.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
