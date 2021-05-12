@@ -4,7 +4,12 @@ const walk = require('./walk')
 const acorn = require('acorn')
 
 const ast = acorn.parse(
-  `import $ from 'jquery';`,
+  `import $ from 'jquery';
+  var obj = { c: 3 }
+  var a = 1;
+  a += obj.c;
+  a++
+  `,
   {
     locations: true,
     ranges: true,
@@ -42,4 +47,44 @@ ImportDeclaration
   Literal
   Literal
 ImportDeclaration
+VariableDeclaration
+  VariableDeclarator
+    Identifier
+    Identifier
+    ObjectExpression
+      Property
+        Identifier
+        Identifier
+        Literal
+        Literal
+      Property
+    ObjectExpression
+  VariableDeclarator
+VariableDeclaration
+VariableDeclaration
+  VariableDeclarator
+    Identifier
+    Identifier
+    Literal
+    Literal
+  VariableDeclarator
+VariableDeclaration
+ExpressionStatement
+  AssignmentExpression
+    Identifier
+    Identifier
+    MemberExpression
+      Identifier
+      Identifier
+      Identifier
+      Identifier
+    MemberExpression
+  AssignmentExpression
+ExpressionStatement
+ExpressionStatement
+  UpdateExpression
+    Identifier
+    Identifier
+  UpdateExpression
+ExpressionStatement
  */

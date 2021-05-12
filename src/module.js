@@ -24,6 +24,7 @@ class Module {
     this.imports = {} // 导入的变量
     this.exports = {} // 导出的变量
     this.definitions = {} // 变量定义的语句
+    this.modifications = {} // 修改的变量
     this.analyse()
   }
   analyse() {
@@ -58,6 +59,13 @@ class Module {
       Object.keys(statement._defines).forEach(name => {
         this.definitions[name] = statement
       })
+      Object.keys(statement._modifies).forEach(name => {
+        if (!hasOwn(this.modifications, name)) {
+          this.modifications[name] = []
+        }
+        // 可能有多处修改
+        this.modifications[name].push(statement)
+      })
     })
   }
   expandAllStatements() {
@@ -81,6 +89,20 @@ class Module {
       result.push(...definition)
     })
     result.push(statement)
+    // 当前模块下所定义的变量 若有修改 则加入result
+    // TODO: 还需解决`var a = 1; var obj = { c: 3 }; a += obj.c;`时`var obj`没被收集的问题
+    const defines = Object.keys(statement._defines)
+    defines.forEach(name => {
+      const modifications = hasOwn(this.modifications, name) && this.modifications[name]
+      if (modifications) {
+        modifications.forEach(modif => {
+          if (!modif._included) {
+            const statements = this.expandStatement(modif)
+            result.push(...statements)
+          }
+        })
+      }
+    })
     return result
   }
   define(name) {

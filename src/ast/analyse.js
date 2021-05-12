@@ -3,7 +3,7 @@ const walk = require('./walk')
 
 function analyse(ast, ms) {
   let scope = new Scope()
-  // 创建作用域链、
+  // 创建作用域链
   ast.body.forEach(statement => {
     function addToScope(declarator) {
       const { name } = declarator.id
@@ -19,6 +19,9 @@ function analyse(ast, ms) {
       _defines: { // 当前模块定义的变量
         value: {},
       },
+      _modifies: { // 修改的变量
+        value: {},
+      },
       _dependsOn: { // 当前模块没有定义的变量，即外部依赖的变量
         value: {},
       },
@@ -32,9 +35,14 @@ function analyse(ast, ms) {
       enter(node) {
         let newScope
         switch (node.type) {
+          case 'FunctionExpression':
           case 'FunctionDeclaration':
             const params = node.params.map(p => p.name)
-            addToScope(node)
+            if (node.type === 'FunctionDeclaration') {
+              addToScope(node)
+            } else if (node.type === 'FunctionExpression' && node.id) {
+              params.push(node.id.name)
+            }
             newScope = new Scope({
               parent: scope,
               params,
@@ -59,19 +67,51 @@ function analyse(ast, ms) {
     })
   })
   ast._scope = scope
-  // 收集外部依赖的变量
+
   ast.body.forEach(statement => {
+    // 收集外部依赖的变量
+    function checkForReads(node) {
+      if (node.type === 'Identifier') {
+        const { name } = node
+        const definingScope = scope.findDefiningScope(name)
+        // 作用域链中找不到 则说明为外部依赖
+        if (!definingScope) {
+          statement._dependsOn[name] = true
+        }
+      }
+    }
+    // 收集变量修改的语句
+    function checkForWrites(node) {
+      function addNode(n) {
+        while (n.type === 'MemberExpression') { // var a = 1; var obj = { c: 3 }; a += obj.c;
+          n = n.object
+        }
+        if (n.type !== 'Identifier') {
+          return
+        }
+        statement._modifies[n.name] = true
+      }
+      if (node.type === 'AssignmentExpression') {
+        addNode(node.left)
+      } else if (node.type === 'UpdateExpression') { // var a = 1; a++
+        addNode(node.argument)
+      } else if (node.type === 'CallExpression') {
+        node.arguments.forEach(addNode)
+      }
+    }
     walk(statement, {
       enter(node) {
-        if (node.type === 'Identifier') {
-          const { name } = node
-          const definingScope = scope.findDefiningScope(name)
-          // 作用域链中找不到 则说明为外部依赖
-          if (!definingScope) {
-            statement._dependsOn[name] = true
-          }
+        if (node._scope) {
+          scope = node._scope
         }
+        checkForReads(node)
+        checkForWrites(node)
       },
+      leave(node) {
+        if (node._scope) {
+          scope = scope.parent
+        }
+      }
     })
   })
 }
