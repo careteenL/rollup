@@ -68,12 +68,17 @@ class Module {
         this.modifications[name].push(statement)
       })
     })
+    console.log(this.definitions, '-------------------')
   }
   expandAllStatements() {
     const allStatements = []
     this.ast.body.forEach(statement => {
       // 过滤`import`语句
       if (statement.type === 'ImportDeclaration') {
+        return
+      }
+      // 过滤定义但未使用的变量
+      if (statement.type === 'VariableDeclaration') {
         return
       }
       const statements = this.expandStatement(statement)
@@ -117,8 +122,12 @@ class Module {
       return mod.define(exportDeclaration.localName)
     } else {
       let statement = this.definitions[name]
-      if (statement && !statement._included) {
-        return this.expandStatement(statement)
+      if (statement) {
+        if (statement._included) {
+          return []
+        } else {
+          return this.expandStatement(statement)
+        }
       } else if (SYSTEM_VARIABLE.includes(name)) {
         return []
       } else {

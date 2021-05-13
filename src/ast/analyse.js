@@ -88,9 +88,9 @@ function analyse(ast, ms) {
         const { name } = node
         const definingScope = scope.findDefiningScope(name)
         // 作用域链中找不到 则说明为外部依赖
-        if (!definingScope) {
+        // if (!definingScope) {
           statement._dependsOn[name] = true
-        }
+        // }
       }
     }
     // 收集变量修改的语句

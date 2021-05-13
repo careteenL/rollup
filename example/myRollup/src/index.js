@@ -12,7 +12,12 @@ say()
 // name += obj.home
 
 // block scope
-if(true) {
-  var blockVariable = 25
-}
-console.log(blockVariable)
+// if(true) {
+//   var blockVariable = 25
+// }
+// console.log(blockVariable)
+
+// entry tree-shaking
+var company = 'sohu focus'
+var companyAge = 23
+console.log(company)
