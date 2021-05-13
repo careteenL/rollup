@@ -2,6 +2,7 @@ const { parse } = require('acorn')
 const MagicString = require('magic-string')
 const analyse = require('./ast/analyse')
 
+const SYSTEM_VARIABLE = ['console', 'log']
 function hasOwn(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop)
 }
@@ -118,8 +119,10 @@ class Module {
       let statement = this.definitions[name]
       if (statement && !statement._included) {
         return this.expandStatement(statement)
-      } else {
+      } else if (SYSTEM_VARIABLE.includes(name)) {
         return []
+      } else {
+        throw new Error(`variable '${name}' is not exist`)
       }
     }
   }

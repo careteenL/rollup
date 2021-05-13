@@ -18,7 +18,7 @@ export default {
     resolve(),
     commonjs(),
     typescript(),
-    terser(),
+    // terser(),
     postcss(),
   ],
 }

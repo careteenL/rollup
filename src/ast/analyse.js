@@ -5,9 +5,9 @@ function analyse(ast, ms) {
   let scope = new Scope()
   // 创建作用域链
   ast.body.forEach(statement => {
-    function addToScope(declarator) {
+    function addToScope(declarator, isBlockDeclaration = false) {
       const { name } = declarator.id
-      scope.add(name)
+      scope.add(name, isBlockDeclaration)
       if (!scope.parent) { // 如果没有上层作用域，说明是模块内的定级作用域
         statement._defines[name] = true
       }
@@ -46,10 +46,23 @@ function analyse(ast, ms) {
             newScope = new Scope({
               parent: scope,
               params,
+              block: true,
+            })
+            break;
+          case 'BlockStatement':
+            newScope = new Scope({
+              parent: scope,
+              block: true,
             })
             break;
           case 'VariableDeclaration':
-            node.declarations.forEach(addToScope)
+            node.declarations.forEach(variableDeclarator => {
+              if (node.kind === 'let' || node.kind === 'const') {
+                addToScope(variableDeclarator, true)
+              } else {
+                addToScope(variableDeclarator, false)
+              }
+            })
             break;
         }
         if (newScope) {
