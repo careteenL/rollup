@@ -1,12 +1,9 @@
 const { parse } = require('acorn')
 const MagicString = require('magic-string')
 const analyse = require('./ast/analyse')
+const { hasOwn } = require('./utils')
 
 const SYSTEM_VARIABLE = ['console', 'log']
-function hasOwn(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop)
-}
-
 class Module {
   constructor({
     code,
@@ -26,6 +23,7 @@ class Module {
     this.exports = {} // 导出的变量
     this.definitions = {} // 变量定义的语句
     this.modifications = {} // 修改的变量
+    this.canonicalNames = {} // 不重名的变量
     this.analyse()
   }
   analyse() {
@@ -134,6 +132,15 @@ class Module {
         throw new Error(`variable '${name}' is not exist`)
       }
     }
+  }
+  rename(name, replacement) {
+    this.canonicalNames[name] = replacement
+  }
+  getCanonicalName(localName) {
+    if (!hasOwn(this.canonicalNames, localName)) {
+      this.canonicalNames[localName] = localName
+    }
+    return this.canonicalNames[localName]
   }
 }
 

@@ -1,7 +1,7 @@
 const Scope = require('./scope')
 const walk = require('./walk')
 
-function analyse(ast, ms) {
+function analyse(ast, ms, module) {
   let scope = new Scope()
   // 创建作用域链
   ast.body.forEach(statement => {
@@ -13,6 +13,9 @@ function analyse(ast, ms) {
       }
     }
     Object.defineProperties(statement, {
+      _module: { // module实例
+        value: module,
+      },
       _source: { // 源代码
         value: ms.snip(statement.start, statement.end),
       },
