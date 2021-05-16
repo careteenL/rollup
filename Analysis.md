@@ -26,7 +26,7 @@
 
 # 揭秘 Rollup Tree Shaking 
 
-![rollup-cover](./assets/rollup-cover.png)
+![rollup-cover](https://careteenl.github.io/images/%40careteen/rollup//rollup-cover.png)
 
 > 文章首发于[@careteen/rollup](https://github.com/careteenL/rollup)，转载请注明来源即可。
 
@@ -210,7 +210,7 @@ console.log(b.toString()) // var name = 'careteen' \n var age = 25
 
 `JavaScript`解析器，将源代码解析成抽象语法树`AST`。
 
-![ast](./assets/ast.png)
+![ast](https://careteenl.github.io/images/%40careteen/rollup//ast.png)
 
 树上定义了代码的结构，通过操作这棵树，可以精准的定位到**声明语句、赋值语句、运算语句**等等。实现对代码的**分析、优化、变更**等操作。
 
@@ -220,7 +220,7 @@ console.log(b.toString()) // var name = 'careteen' \n var age = 25
 - Transform(转换) 对抽象语法树进行转换
 - Generate(代码生成) 将上一步经过转换过的抽象语法树生成新的代码
 
-![ast-flow](./assets/ast-flow.jpg)
+![ast-flow](https://careteenl.github.io/images/%40careteen/rollup//ast-flow.jpg)
 
 ### AST解析过程
 
@@ -230,7 +230,7 @@ console.log(b.toString()) // var name = 'careteen' \n var age = 25
 ```js
 import $ from 'jquery';
 ```
-![ast-parser-1](./assets/ast-parser-1.png)
+![ast-parser-1](https://careteenl.github.io/images/%40careteen/rollup//ast-parser-1.png)
 
 那如何去遍历抽象语法树，并在合适的时机操作它呢？
 
@@ -405,7 +405,7 @@ console.log(globalScope.findDefiningScope('d'))
 
 ## 实现rollup
 
-![rollup-tree-shaking.jpg](./assets/rollup-tree-shaking.jpg)
+![rollup-tree-shaking.jpg](https://careteenl.github.io/images/%40careteen/rollup//rollup-tree-shaking.jpg)
 
 
 新建可调式的配置文件，将`src/index.js`作为入口文件，打包后输出到`dest/bundle.js`
@@ -574,7 +574,7 @@ module.exports = analyse
 
 ## 实现 tree shaking
 
-![rollup-tree-shaking.jpg](./assets/rollup-tree-shaking.jpg)
+![rollup-tree-shaking.jpg](https://careteenl.github.io/images/%40careteen/rollup//rollup-tree-shaking.jpg)
 
 将调试文件内容做如下修改，测试tree-shaking功能
 ```js
