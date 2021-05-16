@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [由浅入深 rollup tree shaking](#%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1-rollup-tree-shaking)
+- [揭秘 Rollup Tree Shaking](#%E6%8F%AD%E7%A7%98-rollup-tree-shaking)
   - [前言](#%E5%89%8D%E8%A8%80)
   - [对比webpack](#%E5%AF%B9%E6%AF%94webpack)
   - [如何使用rollup](#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8rollup)
@@ -24,9 +24,11 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# 由浅入深 rollup tree shaking 
+# 揭秘 Rollup Tree Shaking 
 
-TODO: 封面、流程图、重述流程、总结
+![rollup-cover](./assets/rollup-cover.png)
+
+> 文章首发于[@careteen/rollup](https://github.com/careteenL/rollup)，转载请注明来源即可。
 
 ## 前言
 
@@ -93,7 +95,7 @@ export default {
 
 - [rollup-plugin-babel](https://github.com/rollup/plugins/tree/master/packages/babel#readme)支持使用新语法，用babel进行编译输出。
 - [@rollup/plugin-node-resolve](https://github.com/rollup/plugins/tree/master/packages/node-resolve/#readme)支持解析第三方模块，即`node_modules`目录下。
-- [@rollup/plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs/#readme)支持`commonjs规范`。（因为默认只支持`ES6 module`
+- [@rollup/plugin-commonjs](https://github.com/rollup/plugins/tree/master/packages/commonjs/#readme)支持`commonjs规范`。（因为默认只支持`ES6 module`）
 - [@rollup/plugin-typescript](https://github.com/rollup/plugins/tree/master/packages/typescript/#readme)支持解析`typescript`
 - [rollup-plugin-terser](https://github.com/TrySound/rollup-plugin-terser#readme)支持压缩`js`
 - [rollup-plugin-postcss](https://github.com/egoist/rollup-plugin-postcss#readme)支持编译`css`
@@ -218,7 +220,7 @@ console.log(b.toString()) // var name = 'careteen' \n var age = 25
 - Transform(转换) 对抽象语法树进行转换
 - Generate(代码生成) 将上一步经过转换过的抽象语法树生成新的代码
 
-![ast-flow](./assets/ast-flow.png)
+![ast-flow](./assets/ast-flow.jpg)
 
 ### AST解析过程
 
@@ -346,6 +348,7 @@ class Scope {
 
 module.exports = Scope
 ```
+> 此逻辑在源码[rollup/ast/scope.js](https://github.com/rollup/rollup/blob/53f98a40188215573e47ed95294bc5f631aeec28/src/ast/scope.js)处
 
 看看如何使用
 ```js
@@ -401,6 +404,9 @@ console.log(globalScope.findDefiningScope('d'))
 
 
 ## 实现rollup
+
+![rollup-tree-shaking.jpg](./assets/rollup-tree-shaking.jpg)
+
 
 新建可调式的配置文件，将`src/index.js`作为入口文件，打包后输出到`dest/bundle.js`
 ```js
@@ -567,6 +573,8 @@ module.exports = analyse
 ```
 
 ## 实现 tree shaking
+
+![rollup-tree-shaking.jpg](./assets/rollup-tree-shaking.jpg)
 
 将调试文件内容做如下修改，测试tree-shaking功能
 ```js
@@ -1379,13 +1387,19 @@ const company2 = company + '2'
 console.log(company1, company2)
 ```
 
+✌🏻 😁 ✌🏻
+
 
 ## 总结
 
-TODO:
-
+本文从`rollup`使用再到源码揭秘，实现了`Tree-shaking`简易功能，所有代码存放在[@careteen/rollup](https://github.com/careteenL/rollup)中。感兴趣的同学可以前往调试。
 
 
 ## 引用
 
-- [rollup 0.2.0](https://github.com/rollup/rollup/tree/53f98a40188215573e47ed95294bc5f631aeec28)
+- [Rollup 官网](https://rollupjs.org/guide/en/)
+- [ECMA Module](https://tc39.es/ecma262/#sec-ecmascript-language-scripts-and-modules)
+- [ES module 工作原理](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/)
+- [webpack简易实现](https://github.com/careteenL/webpack)
+- [commonjs规范原理](https://github.com/careteenL/blog/blob/master/src/20181201-node/module.md)
+- [在线解析AST](https://astexplorer.net/)
